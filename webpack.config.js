@@ -6,7 +6,7 @@ const deps = require("./package.json").dependencies;
 module.exports = {
   mode: "development",
   resolve: {
-    extensions: [".css", ".scss", ".js", ".jsx"],
+    extensions: [".css", ".scss", ".js", ".jsx", ".ts",".tsx"],
   },
   module: {
     rules: [
@@ -31,7 +31,13 @@ module.exports = {
         ],
       },
       {
-        test: /\.jsx?$/,
+        test: /\.(js|jsx)?$/,
+        use: ["babel-loader"],
+        exclude: /node_modules/,
+      },
+
+      {
+        test: /\.(ts|tsx)?$/,
         use: ["babel-loader"],
         exclude: /node_modules/,
       },
@@ -49,20 +55,24 @@ module.exports = {
       name: "FIRST_APP",
       filename: "remoteEntry.js",
       exposes: {
-        "./app": "./src/App.js",
+        "./app": "./src/App.tsx",
+        "./counterSlice":'./src/redux/slice/dashboardSlice.ts'
       },
       // shared:['react','react-dom']
       // shared: require("./package.json").dependencies,
       shared: {
         ...deps,
         react: { singleton: true, eager: true, requiredVersion: deps.react },
-        "react-dom": { singleton: true, eager: true, requiredVersion: deps["react-dom"] }
+        "react-dom": { singleton: true, eager: true, requiredVersion: deps["react-dom"] },
+        "@reduxjs/toolkit" :{singleton: true, eager: true, requiredVersion: deps["@reduxjs/toolkit"]},
+        "react-redux" :{singleton: true, eager: true, requiredVersion: deps["react-redux"]}
       },
     }),
   ],
   devServer: {
     static: path.join(__dirname, "dist"),
     port: 8088,
+    liveReload: true
     
   },
   output: {
