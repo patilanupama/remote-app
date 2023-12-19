@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
-import { decrement, increment } from '../redux/slice/dashboardSlice';
+import { decrement, increment, getAllLoadsList } from '../redux/slice/dashboardSlice';
 import { store } from '../redux/store';
 
 
@@ -11,7 +11,7 @@ const Home = ({getHeaders}:any) => {
     const [todoList, setTodoList] = useState([])
     const [loadsList, setLoadsList] = useState([])
     console.log(useSelector((state) => state ),"++++++++++++++++++++++++++++++")
-    const count = useSelector((state:any) => state.counterSlice.value );
+    const count = useSelector((state:any) => state?.counterSlice?.value )||0;
     const dispatch = useDispatch()
 
     console.log(count)
@@ -29,12 +29,14 @@ const Home = ({getHeaders}:any) => {
     }
     const handleClick = async () => {
         console.log("Clicked", getHeaders)
-        // const res = await axios.post('https://api-dev.traffix.com/loadmanagement/v1/loads',{userEmail:"oneapteam1@gmail.com", vendorIDs: []}, {
-        //     headers: getHeaders
-        // })
+        const res = await axios.post('https://api-dev.traffix.com/loadmanagement/v1/loads',{userEmail:"onecarrier1@gmail.com", vendorIDs: []}, {
+            headers: getHeaders
+        })
 
-        // // const res = getHeaders({userEmail:"oneapteam1@gmail.com", vendorIDs: []})
-        // setLoadsList(res.data)
+        dispatch(getAllLoadsList(res.data))
+
+        // const res = getHeaders({userEmail:"oneapteam1@gmail.com", vendorIDs: []})
+        setLoadsList(res.data)
 
     }
 
